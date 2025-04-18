@@ -1,0 +1,29 @@
+name: Close Issues via Custom Patterns
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+      - master
+
+jobs:
+  close-issues:
+    runs-on: ubuntu:25.04
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        
+      - name: Close issues based on commit messages
+        uses: docker://ghcr.io/cygnusx-1-org/github-custom-issue-closer:0.0.2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          # Optional: Override the default regex pattern
+          # pattern: "completed[\\s:]+#(\\d+)"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

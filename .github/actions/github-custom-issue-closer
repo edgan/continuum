@@ -1,0 +1,24 @@
+name: 'Custom Issue Closer'
+description: 'Automatically close GitHub issues based on custom patterns in commit messages'
+author: 'Nathan Grennan <github@cygnusx-1.org>'
+
+inputs:
+  github_token:
+    description: 'GitHub token for API access'
+    required: true
+    default: ${{ github.token }}
+  pattern:
+    description: 'Custom regex pattern to match in commit messages'
+    required: false
+    default: '[d]?(?:\\s*:)?\\s*#(\\d+)$'
+
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.github_token }}
+    - ${{ inputs.pattern }}
+
+branding:
+  icon: 'x-circle'
+  color: 'red'
